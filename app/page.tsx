@@ -3,7 +3,7 @@ import Image from 'next/image'
 export default function Home() {
   return (
     <main>
-      TrackMate
-      </main>
+      TrackBuddy - Issue Tracker
+    </main>
   )
 }
