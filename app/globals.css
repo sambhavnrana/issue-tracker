@@ -13,4 +13,5 @@
 
 body {
   color: rgb(var(--foreground-rgb));
+  @apply font-poppins;
 }
