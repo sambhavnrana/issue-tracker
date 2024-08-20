@@ -37,6 +37,8 @@ const IssuesPage = async () => {
       </Table.Root>
     </div>
   )
-}
+};
+
+export const dynamic = 'force-dynamic'; // forces this file to be a dynamic route, ie. not statically generated
 
 export default IssuesPage;
