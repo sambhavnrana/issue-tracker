@@ -3,7 +3,8 @@ import localFont from 'next/font/local';
 import './globals.css';
 import type { Metadata } from 'next'
 import NavBar from './NavBar'
-import { Theme, ThemePanel } from '@radix-ui/themes';
+import { Container, Theme, ThemePanel } from '@radix-ui/themes';
+
 
 const poppins = localFont({
   src: '../public/fonts/poppins-regular-webfont.woff2',
@@ -29,7 +30,9 @@ export default function RootLayout({
         <Theme appearance="light" accentColor="orange" radius="large">
           <NavBar />
           <main className='p-5'>
-            {children}
+            <Container>
+              {children}
+            </Container>
           </main>
         </Theme>
       </body>
