@@ -3,9 +3,21 @@
 import { AlertDialog, Button, Flex } from "@radix-ui/themes"
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { set } from "zod";
 
 const DeleteIssueButton = ({ issueId }: { issueId: number }) => {
     const router = useRouter();
+    const [error, setError] = useState(false);
+    const deleteIssue = async () => {
+        try {
+            await axios.delete('/api/issues/' + issueId);
+            router.push('/issues');
+            router.refresh();
+        } catch (error) {
+            setError(true);
+        }
+    }
     return (
         <>
             <AlertDialog.Root>
@@ -23,11 +35,23 @@ const DeleteIssueButton = ({ issueId }: { issueId: number }) => {
                             <Button variant="soft" color="gray">Cancel</Button>
                         </AlertDialog.Cancel>
                         <AlertDialog.Action>
-                            <Button onClick={async () => {
-                                await axios.delete('/api/issues/' + issueId);
-                                router.push('/issues');
-                                router.refresh();
-                            }} color="red">Delete Issue</Button>
+                            <Button onClick={deleteIssue} color="red">Delete Issue</Button>
+                        </AlertDialog.Action>
+                    </Flex>
+                </AlertDialog.Content>
+            </AlertDialog.Root>
+            <AlertDialog.Root open={error}>
+                <AlertDialog.Content>
+                    <AlertDialog.Title>Error</AlertDialog.Title>
+                    <AlertDialog.Description>
+                        This issue could not be completed.
+                    </AlertDialog.Description>
+                    <Flex mt="2">
+                        <AlertDialog.Action>
+                            <Button onClick={() => {
+                                setError(false);
+                            }
+                            } variant="soft" color="gray">OK</Button>
                         </AlertDialog.Action>
                     </Flex>
                 </AlertDialog.Content>
