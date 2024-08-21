@@ -6,7 +6,7 @@ const EditIssueButton = ({ issueId }: { issueId: number }) => {
     return (
         <Button>
             <Pencil2Icon />
-            <Link href={`/issues/${issueId}/edit`}>Edit Issue</Link>
+            <Link href={`/issues/edit/${issueId}`}>Edit Issue</Link>
             {/* didn't use our customised Link as we want simple client side navigation here */}
         </Button>
     )
