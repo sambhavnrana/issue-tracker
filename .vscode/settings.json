@@ -1,0 +1,6 @@
+{
+    "gitlens.gitCommands.search.showResultsInSideBar": false,
+    "workbench.sideBar.location": "left",
+    "workbench.activityBar.visible": true,
+    "postman.showInActivityBar": true
+}
