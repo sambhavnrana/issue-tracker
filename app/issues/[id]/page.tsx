@@ -6,6 +6,7 @@ import EditIssueButton from './EditIssueButton';
 import IssueDetails from './IssueDetails';
 import { auth } from '@/auth';
 import AssigneeSelect from './AssigneeSelect';
+import { title } from 'process';
 
 interface Props {
     params: { id: string }
@@ -40,6 +41,15 @@ const IssuesDetailPage = async ({ params }: Props) => {
             )}
         </Grid>
     )
+}
+
+export async function generateMetadata({ params }: Props) {
+    const issue = await prisma.issue.findUnique({ where: { id: parseInt(params.id) } })
+
+    return {
+        title: issue?.title,
+        description: 'Details of Issue' + issue?.id
+    }
 }
 
 export default IssuesDetailPage
