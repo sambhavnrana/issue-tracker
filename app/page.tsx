@@ -1,7 +1,24 @@
-import LatestIssues from "./LatestIssues";
+import IssueSummary from "./IssueSummary";
 
-export default function Home() { //Extract the searchParams property from the props object, and assign it to a variable searchParams
+import prisma from "@/prisma/client";
+
+export default async function Home() {
+  const open = await prisma.issue.count({
+    where: {
+      status: 'OPEN'
+    }
+  });
+  const inProgress = await prisma.issue.count({
+    where: {
+      status: 'IN_PROGRESS'
+    }
+  });
+  const closed = await prisma.issue.count({
+    where: {
+      status: 'CLOSED'
+    }
+  })
   return (
-    <LatestIssues />
+    <IssueSummary open={open} inProgress={inProgress} closed={closed} />
   )
 }
