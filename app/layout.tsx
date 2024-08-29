@@ -32,7 +32,7 @@ export default function RootLayout({
       <body className={poppins.variable}>
         <QueryClientProvider>
           <AuthProvider>
-            <Theme appearance="light" accentColor="orange" radius="large">
+            <Theme appearance="light" accentColor="pink" radius="large">
               <NavBar />
               <main className='p-5'>
                 <Container>
