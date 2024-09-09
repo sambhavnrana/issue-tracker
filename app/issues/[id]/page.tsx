@@ -7,43 +7,47 @@ import AssigneeSelect from './AssigneeSelect';
 import DeleteIssueButton from './DeleteIssueButton';
 import EditIssueButton from './EditIssueButton';
 import IssueDetails from './IssueDetails';
+import StatusSelect from './StatusSelect';
 
 interface Props {
     params: { id: string }
 }
 
-const fetchUser = cache((issueId: number) => prisma.issue.findUnique({ where: { id: issueId } })
-)
+const fetchIssue = cache(async (issueId: number) => {
+    const issue = await prisma.issue.findUnique({
+        where: { id: issueId }
+    });
+    if (!issue) notFound();
+    return issue;
+});
 
-const IssuesDetailPage = async ({ params }: Props) => {
+const IssueDetailPage = async ({ params }: Props) => {
+    const issue = await fetchIssue(parseInt(params.id));
     const session = await auth();
 
-    const issue = await fetchUser(parseInt(params.id))
-
-    if (!issue)
-        notFound();
-
     return (
-        <Grid columns={{ initial: "1", sm: "5" }} gap="5">
-            {/* md in radix-ui represents laptops, but in tailwind , lg represents laptops, so therefore using md:col-span-4 */}
-            <Box className='md:col-span-4'>
+        <Grid columns={{ initial: "1", md: "2" }} gap="5">
+            <Box>
                 <IssueDetails issue={issue} />
             </Box>
-            {session && (
-                <Box>
-                    <Flex direction="column" gap="4">
-                        <AssigneeSelect issue={issue} />
-                        <EditIssueButton issueId={issue.id} />
-                        <DeleteIssueButton issueId={issue.id} />
-                    </Flex>
-                </Box>
-            )}
+            <Box>
+                <Flex direction="column" gap="4">
+                    <AssigneeSelect issue={issue} />
+                    <StatusSelect issue={issue} />
+                    {session && (
+                        <Flex gap="3">
+                            <EditIssueButton issueId={issue.id} />
+                            <DeleteIssueButton issueId={issue.id} />
+                        </Flex>
+                    )}
+                </Flex>
+            </Box>
         </Grid>
     )
 }
 
 export async function generateMetadata({ params }: Props) {
-    const issue = await fetchUser(parseInt(params.id))
+    const issue = await fetchIssue(parseInt(params.id))
 
     return {
         title: issue?.title,
@@ -51,4 +55,4 @@ export async function generateMetadata({ params }: Props) {
     }
 }
 
-export default IssuesDetailPage
+export default IssueDetailPage
