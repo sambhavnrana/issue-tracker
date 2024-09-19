@@ -22,15 +22,16 @@ const IssueSummary = ({ open, inProgress, closed }: Props) => {
   return (
     <Flex className='pl-10 gap-8 pb-6'>
       {containers.map(container => (
-        <Link className='text-sm font-medium hover:text-brand-dark'
+        <Link
+          key={container.label}
+          className='text-sm font-medium hover:text-brand-dark'
           href={`/issues/list?status=${container.status}`}>
-          <Card key={container.label} className='shadow-xl m-2 p-5'
+          <Card className='shadow-xl m-2 p-5'
             style={{ border: '1px solid #ec4899' }}
           >
             <Flex direction="column" >
               {container.label}
               <Text size="5" className='font-bold' >{container.value}</Text>
-
             </Flex>
           </Card>
         </Link>
