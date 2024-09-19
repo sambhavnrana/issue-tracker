@@ -29,17 +29,13 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
         try {
             setSubmitting(true)
             setError('')
-            console.log('Submitting data:', data);
-            
+
             if (issue) {
-                console.log('Updating issue:', issue.id);
                 await axios.patch('/api/issues/' + issue.id, data);
             } else {
-                console.log('Creating new issue');
                 const response = await axios.post('/api/issues', data);
-                console.log('Response:', response.data);
             }
-            
+
             router.push('/issues/list')
             router.refresh(); // refresh the page to get the updated data
         } catch (error) {

@@ -19,14 +19,11 @@ const IssueChart = ({ open, inProgress, closed }: Props) => {
 
     useEffect(() => {
         setChartData([
-            { label: 'In Progress', value: inProgress },
             { label: 'Open', value: open },
+            { label: 'In Progress', value: inProgress },
             { label: 'Closed', value: closed },
         ]);
     }, [open, inProgress, closed]);
-
-    console.log('IssueChart received:', { open, inProgress, closed });
-    console.log('Chart data:', chartData);
 
     return (
         <Card>
@@ -34,8 +31,17 @@ const IssueChart = ({ open, inProgress, closed }: Props) => {
                 <BarChart data={chartData}>
                     <XAxis dataKey="label" />
                     <YAxis />
-                    <Bar dataKey="value" style={{ fill: 'var(--accent-9)' }} barSize={80} />
-                </BarChart>
+                    <Bar
+                        key={`${open}-${inProgress}-${closed}`} // ensures React animates on data change
+                        dataKey="value"
+                        fill="var(--accent-9)"
+                        barSize={70}
+                        isAnimationActive={true}
+                        animationBegin={400}
+                        animationDuration={1200}
+                        animationEasing="ease-in-out"
+                        radius={[8, 8, 0, 0]} // rounded top corners for a smoother look
+                    />                </BarChart>
             </ResponsiveContainer>
         </Card>
     )

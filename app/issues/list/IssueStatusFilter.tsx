@@ -17,7 +17,7 @@ const IssueStatusFilter = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     return (
-        <Select.Root
+        <Select.Root size="3"
             defaultValue={searchParams.get('status') || ''}
             onValueChange={(status) => {
                 const params = new URLSearchParams();
@@ -26,8 +26,13 @@ const IssueStatusFilter = () => {
                     params.append('orderBy', searchParams.get('orderBy')!)
                 const query = params.size ? '?' + params.toString() : ''
                 router.push('/issues/list' + query)
-            }} >
-            <Select.Trigger>
+            }}>
+
+            <Select.Trigger style={{
+                border: '1px solid hotpink',
+                borderRadius: '6px',
+                padding: '8px 12px',
+            }}>
                 Select an option...
             </Select.Trigger>
             <Select.Content>
@@ -40,7 +45,7 @@ const IssueStatusFilter = () => {
 
             </Select.Content>
 
-        </Select.Root>
+        </Select.Root >
     )
 }
 

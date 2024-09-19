@@ -3,17 +3,15 @@ import localFont from 'next/font/local';
 import './globals.css';
 import type { Metadata } from 'next'
 import NavBar from './NavBar'
-import { Container, Theme, ThemePanel } from '@radix-ui/themes';
+import { Container, Theme } from '@radix-ui/themes';
 import AuthProvider from './auth/Provider';
 import QueryClientProvider from './QueryClientProvider';
-
-
+import Footer from './Footer';
 
 const poppins = localFont({
   src: '../public/fonts/poppins-regular-webfont.woff2',
   variable: '--font-poppins',
 });
-
 
 export const metadata: Metadata = {
   title: 'TrackBuddy - Issue Tracker',
@@ -33,10 +31,13 @@ export default function RootLayout({
         <QueryClientProvider>
           <AuthProvider>
             <Theme appearance="light" accentColor="pink" radius="large">
-              <NavBar />
+              <div className="pt-8 md:pt-24">
+                <NavBar />
+              </div>
               <main className='p-5'>
                 <Container>
                   {children}
+                  <Footer />
                 </Container>
               </main>
             </Theme>

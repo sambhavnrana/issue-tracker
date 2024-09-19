@@ -39,7 +39,8 @@ const IssueTable = ({ searchParams, issues }: Props) => {
                 {issues.map((issue) => (
                     <Table.Row key={issue.id}>
                         <Table.Cell>
-                            <Link href={`/issues/${issue.id}`}>
+                            <Link href={`/issues/${issue.id}`}
+                                className="text-black hover:text-brand-dark hover:underline transition-colors duration-200">
                                 {issue.title}
                             </Link>
                             <div className="block md:hidden">

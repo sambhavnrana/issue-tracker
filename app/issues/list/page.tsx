@@ -33,9 +33,11 @@ const IssuesPage = async ({ searchParams }: Props) => {
   const issueCount = await prisma.issue.count({ where })
 
   return (
-    <Flex direction="column" gap="3" >
+    <Flex direction="column" gap="3">
       <IssueActions />
+      <div className='border border-brand-light rounded-xl'>
       <IssueTable searchParams={searchParams} issues={issues} />
+      </div>
       <Pagination
         pageSize={pageSize}
         currentPage={page}
@@ -45,7 +47,7 @@ const IssuesPage = async ({ searchParams }: Props) => {
   )
 };
 
-export const dynamic = 'force-dynamic'; // forces this file to be a dynamic route, ie. not statically generated
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: " Issue List - TrackBuddy ",
