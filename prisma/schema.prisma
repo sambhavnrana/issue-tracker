@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,23 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Issue {
-  id               Int      @id @default(autoincrement())
-  title            String   @db.VarChar(255) //varchar(191) ie string values upto 255 characters
-  description      String   @db.Text
-  status           Status   @default(OPEN)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  assignedToUserId String?  @db.VarChar(255)
-  assignedToUser   User?    @relation(fields: [assignedToUserId], references: [id])
-}
-
-enum Status {
-  OPEN
-  IN_PROGRESS
-  CLOSED
-}
-
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -34,31 +14,34 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
-  accounts      Account[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  accounts      Account?
+  assignedIssues Issue[]  @relation("IssueAssignee")
+  createdIssues  Issue[]  @relation("IssueCreator")
   sessions      Session[]
-
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  assignedIssues Issue[]
+  organizationsCreated Organization[] @relation("OrganizationCreator")
+  organizationMemberships OrganizationMember[]
+  organizationInvitations OrganizationInvitation[] @relation("InvitedUser")
+  invitedOrganizations OrganizationInvitation[] @relation("InvitedByUser")
 }
 
 model Account {
-  id                String  @id @default(cuid())
-  userId            String  @unique
+  id                String   @id @default(cuid())
+  userId            String   @unique
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?  @db.Text
+  access_token      String?  @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?  @db.Text
   session_state     String?
-  user              User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -68,17 +51,101 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@index([userId], map: "Session_userId_fkey")
 }
 
 model VerificationToken {
-  id         String   @id @default(cuid())
+  id         String   @id
   identifier String
   token      String
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Issue {
+  id               Int          @id @default(autoincrement())
+  title            String       @db.VarChar(255)
+  description      String       @db.Text
+  status           Issue_status @default(OPEN)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime
+  assignedToUserId String?      @db.VarChar(255)
+  projectId        String
+  createdById      String
+  organizationId   String?
+  assignee         User?        @relation("IssueAssignee", fields: [assignedToUserId], references: [id])
+  creator          User         @relation("IssueCreator", fields: [createdById], references: [id])
+  Project          Project      @relation(fields: [projectId], references: [id])
+  organization     Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([assignedToUserId])
+  @@index([projectId])
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  name        String   @db.VarChar(255)
+  description String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  organizationId String
+  Issue       Issue[]
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model Organization {
+  id          String   @id @default(cuid())
+  name        String   @db.VarChar(255)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  creatorId   String
+  creator     User     @relation("OrganizationCreator", fields: [creatorId], references: [id])
+  organizationMemberships OrganizationMember[]
+  organizationInvitations OrganizationInvitation[]
+  issues      Issue[]
+  projects    Project[]
+}
+
+model OrganizationMember {
+  organizationId String
+  userId         String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([organizationId, userId])
+}
+
+model OrganizationInvitation {
+  id             String   @id @default(cuid())
+  organizationId String
+  invitedUserId  String
+  invitedByUserId String
+  status         InvitationStatus @default(PENDING)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invitedUser    User     @relation("InvitedUser", fields: [invitedUserId], references: [id], onDelete: Cascade)
+  invitedByUser  User     @relation("InvitedByUser", fields: [invitedByUserId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, invitedUserId])
+  @@index([invitedUserId])
+  @@index([organizationId])
+}
+
+enum Issue_status {
+  OPEN
+  IN_PROGRESS
+  CLOSED
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  EXPIRED
 }

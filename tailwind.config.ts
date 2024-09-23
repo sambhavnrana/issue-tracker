@@ -41,12 +41,13 @@ const config: Config = {
           "100%": { opacity: "1", transform: "translateX(0)" },
         },
         "fade-in-right": {
-         "0%": { opacity: "0", transform: "translateX(-120px)" },
+         "0%": { opacity: "0", transform: "translateX(-80px)" },
           "100%": { opacity: "1", transform: "translateX(0)" },
         },
       },
       animation: {
         "fade-in-up": "fade-in-up-main 1.2s ease-out both",
+        "fade-in-line": "fade-in-in-btn2 1.2s ease-out both",
         "fade-in-in1": "fade-in-in-btn1 0.8s ease-out both",
         "fade-in-in2": "fade-in-in-btn2 0.8s ease-out both",
         "fade-in-left": "fade-in-left 0.8s ease-out both",

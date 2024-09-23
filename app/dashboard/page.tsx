@@ -7,19 +7,54 @@ import IssueSummary from "../IssueSummary";
 import prisma from "@/prisma/client";
 import LatestIssues from "../LatestIssues";
 import { Metadata } from "next";
+import { auth } from '@/auth';
 
 export default async function Home() {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return <div className="p-8 text-center text-red-700 font-medium">Not authenticated</div>;
+  }
+  const userId = session.user.id;
+
+  // Find all organization IDs where the user is a member
+  const orgMemberships = await prisma.organizationMember.findMany({
+    where: { userId },
+    select: { organizationId: true },
+  });
+  const memberOrgIds = orgMemberships.map(m => m.organizationId);
+
   try {
     const [open, inProgress, closed] = await Promise.all([
       prisma.issue.count({
-        where: { status: 'OPEN' }
+        where: {
+          status: 'OPEN',
+          OR: [
+            { assignedToUserId: userId },
+            { Project: { organization: { creatorId: userId } } },
+            { organizationId: { in: memberOrgIds } },
+          ],
+        },
       }),
       prisma.issue.count({
-        where: { status: 'IN_PROGRESS' }
+        where: {
+          status: 'IN_PROGRESS',
+          OR: [
+            { assignedToUserId: userId },
+            { Project: { organization: { creatorId: userId } } },
+            { organizationId: { in: memberOrgIds } },
+          ],
+        },
       }),
       prisma.issue.count({
-        where: { status: 'CLOSED' }
-      })
+        where: {
+          status: 'CLOSED',
+          OR: [
+            { assignedToUserId: userId },
+            { Project: { organization: { creatorId: userId } } },
+            { organizationId: { in: memberOrgIds } },
+          ],
+        },
+      }),
     ]);
 
     return (
@@ -28,7 +63,7 @@ export default async function Home() {
           <IssueSummary open={open} inProgress={inProgress} closed={closed} />
           <IssueChart open={open} inProgress={inProgress} closed={closed} />
         </Flex>
-        <LatestIssues />
+        <LatestIssues userId={userId} memberOrgIds={memberOrgIds} />
       </Grid>
     );
   } catch (error) {
@@ -39,7 +74,7 @@ export default async function Home() {
           <IssueSummary open={0} inProgress={0} closed={0} />
           <IssueChart open={0} inProgress={0} closed={0} />
         </Flex>
-        <LatestIssues />
+        <LatestIssues userId={userId} memberOrgIds={memberOrgIds} />
       </Grid>
     );
   }

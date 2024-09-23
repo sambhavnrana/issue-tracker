@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/client";
 import { auth } from "@/auth";
-import { Status } from "@prisma/client";
+import { z } from 'zod';
+import { Issue_status } from "@prisma/client";
+
+const statusSchema = z.object({
+  status: z.enum(['OPEN', 'IN_PROGRESS', 'CLOSED'] as [Issue_status, ...Issue_status[]]),
+});
 
 export async function PATCH(
   request: NextRequest,
@@ -9,29 +14,52 @@ export async function PATCH(
 ) {
   try {
     const session = await auth();
-    if (!session) return NextResponse.json({}, { status: 401 });
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
 
     const body = await request.json();
-    const { status } = body;
+    const validation = statusSchema.safeParse(body);
 
-    if (!Object.values(Status).includes(status)) {
+    if (!validation.success) {
+      return NextResponse.json(validation.error.format(), { status: 400 });
+    }
+
+    const { status } = validation.data;
+
+    const issue = await prisma.issue.findUnique({
+      where: { id: parseInt(params.id) },
+      include: {
+        Project: true,
+      },
+    });
+
+    if (!issue) {
+      return NextResponse.json({ error: "Issue not found" }, { status: 404 });
+    }
+
+    const isAuthorized =
+      issue.createdById === session.user.id ||
+      issue.assignedToUserId === session.user.id;
+
+    if (!isAuthorized) {
       return NextResponse.json(
-        { error: "Invalid status" },
-        { status: 400 }
+        { error: "Not authorized to update this issue" },
+        { status: 403 }
       );
     }
 
-    const issue = await prisma.issue.update({
-      where: { id: parseInt(params.id) },
+    const updatedIssue = await prisma.issue.update({
+      where: { id: issue.id },
       data: { status },
     });
 
-    return NextResponse.json(issue);
+    return NextResponse.json(updatedIssue);
   } catch (error) {
-    console.error('Error updating issue status:', error);
+    console.error("Error:", error);
     return NextResponse.json(
-      { error: "Error updating issue status" },
+      { error: "An error occurred while updating the issue status" },
       { status: 500 }
     );
   }
-} 
+}

@@ -1,11 +1,11 @@
 "use client"
 
-import { Status } from '@prisma/client'
+import { Issue_status } from '@prisma/client'
 import { Select } from '@radix-ui/themes'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React from 'react'
 
-const statuses: { label: string, value?: Status }[] = [
+const statuses: { label: string, value?: Issue_status }[] = [
     { label: 'All' },
     { label: 'Open', value: 'OPEN' },
     { label: 'In Progress', value: 'IN_PROGRESS' },
@@ -30,22 +30,22 @@ const IssueStatusFilter = () => {
 
             <Select.Trigger style={{
                 border: '1px solid hotpink',
-                borderRadius: '6px',
-                padding: '8px 12px',
-            }}>
-                Select an option...
-            </Select.Trigger>
+                borderRadius: '8px',
+                padding: '8px 16px',
+                width: '150px',
+                color: 'black',
+                backgroundColor: 'white',
+            }} />
             <Select.Content>
-                {statuses.map((status, index) => (
-                    <Select.Item key={status.value} value={status.value || ''}>
+                {statuses.map(status => (
+                    <Select.Item
+                        key={status.value || 'all'}
+                        value={status.value || ''}>
                         {status.label}
                     </Select.Item>
                 ))}
-
-
             </Select.Content>
-
-        </Select.Root >
+        </Select.Root>
     )
 }
 

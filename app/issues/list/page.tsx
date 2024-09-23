@@ -1,6 +1,7 @@
 import Pagination from '@/app/components/Pagination';
 import prisma from '@/prisma/client';
-import { Status } from '@prisma/client';
+import { Issue_status } from '@prisma/client';
+import { auth } from '@/auth';
 
 import IssueActions from './IssueActions';
 import IssueTable, { columnNames, IssueQuery } from './IssueTable';
@@ -11,10 +12,32 @@ interface Props {
 }
 
 const IssuesPage = async ({ searchParams }: Props) => {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return <div className="p-8 text-center text-red-700 font-medium">Not authenticated</div>;
+  }
+  const userId = session.user.id;
 
-  const statuses = Object.values(Status)
+  // Find all organization IDs where the user is a member
+  const orgMemberships = await prisma.organizationMember.findMany({
+    where: { userId },
+    select: { organizationId: true },
+  });
+  const memberOrgIds = orgMemberships.map(m => m.organizationId);
+
+  const statuses = Object.values(Issue_status)
   const status = statuses.includes(searchParams.status) ? searchParams.status : undefined;
-  const where = { status };
+  const projectId = searchParams.projectId;
+
+  const where = {
+    status,
+    ...(projectId && { projectId }),
+    OR: [
+      { assignedToUserId: userId },
+      { Project: { organization: { creatorId: userId } } },
+      { organizationId: { in: memberOrgIds } },
+    ],
+  };
 
   const orderBy = columnNames
     .includes(searchParams.orderBy)
@@ -27,7 +50,8 @@ const IssuesPage = async ({ searchParams }: Props) => {
     where,
     orderBy,
     skip: (page - 1) * pageSize,
-    take: pageSize
+    take: pageSize,
+    include: { organization: true, creator: true },
   });
 
   const issueCount = await prisma.issue.count({ where })
@@ -35,9 +59,7 @@ const IssuesPage = async ({ searchParams }: Props) => {
   return (
     <Flex direction="column" gap="3">
       <IssueActions />
-      <div className='border border-brand-light rounded-xl'>
       <IssueTable searchParams={searchParams} issues={issues} />
-      </div>
       <Pagination
         pageSize={pageSize}
         currentPage={page}

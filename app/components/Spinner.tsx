@@ -1,16 +1,31 @@
-import React from 'react'
+'use client';
 
-const Spinner = () => {
-    return (
-        <div
-  className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-solid border-current border-e-transparent align-[-0.125em] text-info motion-reduce:animate-[spin_1.5s_linear_infinite]"
-  role="status">
-  <span
-    className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]"
-    >Loading...</span
-  >
-</div>
-    )
-}
+import React from 'react';
+import { motion } from 'framer-motion';
 
-export default Spinner
+const Spinner: React.FC = () => {
+  return (
+    <div className="flex items-start justify-center h-screen w-full pt-20 sm:pt-32 md:pt-40">
+      <motion.div
+        role="status"
+        aria-label="Loading"
+        initial={{ opacity: 0, scale: 1 }}
+        animate={{
+          opacity: 1,
+          scale: 1.5,
+          rotate: 360,
+        }}
+        transition={{
+          rotate: { repeat: Infinity, duration: 1, ease: 'linear' },
+          opacity: { duration: 0.2 },
+          scale: { duration: 0.2 },
+        }}
+        className="rounded-full border-4 border-t-transparent border-brand-dark"
+        style={{ width: 48, height: 48 }}
+      >
+      </motion.div>
+      </div>
+  );
+};
+
+export default Spinner;
