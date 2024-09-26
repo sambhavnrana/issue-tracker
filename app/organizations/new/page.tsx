@@ -102,4 +102,10 @@ export default function CreateOrganizationPage() {
       </form>
     </div>
   );
-} 
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+}; 

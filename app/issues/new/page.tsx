@@ -70,3 +70,9 @@ const NewIssuePage = () => {
 }
 
 export default NewIssuePage;
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+};

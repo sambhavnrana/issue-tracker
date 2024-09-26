@@ -43,9 +43,10 @@ export async function PATCH(
       return NextResponse.json({ error: "Issue not found" }, { status: 404 });
     }
 
-    const isOrgMember = issue.organization?.organizationMemberships.some((m: any) => m.userId === session.user.id);
-    const isAssignee = issue.assignedToUserId === session.user.id;
-    const isCreator = issue.organization?.creatorId === session.user.id;
+    const userId = session.user?.id;
+    const isOrgMember = userId && issue.organization?.organizationMemberships.some((m: any) => m.userId === userId);
+    const isAssignee = userId && issue.assignedToUserId === userId;
+    const isCreator = userId && issue.organization?.creatorId === userId;
 
     if (!(isCreator || isAssignee || isOrgMember)) {
       return NextResponse.json(

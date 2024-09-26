@@ -19,8 +19,13 @@ export const metadata: Metadata = {
   title: 'TrackBuddy - Issue Tracker',
   description: 'TrackBuddy is an advanced issue tracker for all of your requirements',
   keywords: ['issue tracker', 'bug tracker', 'project management'],
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
 }
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+};
 
 export default function RootLayout({
   children,

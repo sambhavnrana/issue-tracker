@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Button } from '@radix-ui/themes';
 import { Avatar } from '@radix-ui/themes';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import Spinner from '../components/Spinner';
@@ -248,4 +247,10 @@ export default function CreatedOrganizationsPage() {
       </div>
     </div>
   );
-} 
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+}; 
