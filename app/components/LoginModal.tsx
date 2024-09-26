@@ -45,8 +45,7 @@ export default function LoginModal({
         
         {/* Footer */}
         <p className="text-xs sm:text-sm text-gray-500 mt-4 sm:mt-6">
-          By continuing, you agree to our terms of service and privacy policy.
-        </p>
+        By continuing, you accept how this site works and handles your information.        </p>
       </div>
     </div>
   );

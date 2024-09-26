@@ -18,7 +18,6 @@ const IssuesPage = async ({ searchParams }: Props) => {
   }
   const userId = session.user.id;
 
-  // Find all organization IDs where the user is a member
   const orgMemberships = await prisma.organizationMember.findMany({
     where: { userId },
     select: { organizationId: true },
@@ -51,7 +50,7 @@ const IssuesPage = async ({ searchParams }: Props) => {
     orderBy,
     skip: (page - 1) * pageSize,
     take: pageSize,
-    include: { organization: true, creator: true },
+    include: { organization: true, creator: true, Project: true },
   });
 
   const issueCount = await prisma.issue.count({ where })

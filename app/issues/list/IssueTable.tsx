@@ -37,6 +37,7 @@ const IssueTable = ({ searchParams, issues }: Props) => {
                             </th>
                         ))}
                         <th className="px-2 sm:px-3 md:px-4 py-2 text-left text-xs font-bold text-white uppercase tracking-wider hidden md:table-cell">Organization</th>
+                        <th className="px-2 sm:px-3 md:px-4 py-2 text-left text-xs font-bold text-white uppercase tracking-wider hidden md:table-cell">Project</th>
                         <th className="px-2 sm:px-3 md:px-4 py-2 text-left text-xs font-bold text-white uppercase tracking-wider">Creator</th>
                     </tr>
                 </thead>
@@ -63,10 +64,13 @@ const IssueTable = ({ searchParams, issues }: Props) => {
                                     <IssueStatusBadge status={issue.status} />
                                 </td>
                                 <td className="px-2 sm:px-3 md:px-4 py-2 hidden md:table-cell text-xs sm:text-sm text-gray-600">
-                                    {issue.createdAt.toDateString()}
+                                {issue.createdAt.toLocaleDateString('en-US', {year: 'numeric',month: 'short',day: 'numeric'})}
                                 </td>
                                 <td className="px-2 sm:px-3 md:px-4 py-2 hidden md:table-cell text-xs sm:text-sm text-gray-600">
                                     {issue.organization?.name || '-'}
+                                </td>
+                                <td className="px-2 sm:px-3 md:px-4 py-2 hidden md:table-cell text-xs sm:text-sm text-gray-600">
+                                    {issue.Project?.name || '-'}
                                 </td>
                                 <td className="px-2 sm:px-3 md:px-4 py-2">
                                     {issue.creator && (

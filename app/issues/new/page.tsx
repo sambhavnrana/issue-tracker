@@ -20,7 +20,7 @@ const NewIssuePage = () => {
 
     useEffect(() => {
         Promise.all([
-            fetch('/api/organizations').then(res => res.json()),
+            fetch('/api/organizations/all').then(res => res.json()),
             fetch('/api/projects/available').then(res => res.json()),
         ]).then(([orgs, projects]) => {
             setOrgs(orgs);
@@ -31,7 +31,6 @@ const NewIssuePage = () => {
 
     if (loading) return <IssueFormSkeleton />;
 
-    // If no organizations, show only create organization button
     if (!orgs || orgs.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
@@ -49,7 +48,6 @@ const NewIssuePage = () => {
         );
     }
 
-    // If there are organizations but no projects, show only create project button
     if (!projects || projects.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">

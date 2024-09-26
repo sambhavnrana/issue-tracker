@@ -18,13 +18,10 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   if (!Array.isArray(memberIds)) {
     return NextResponse.json({ error: 'Invalid memberIds' }, { status: 400 });
   }
-  // Update organization name if provided
   if (typeof name === 'string' && name.length > 0 && name !== org.name) {
     await prisma.organization.update({ where: { id: org.id }, data: { name } });
   }
-  // Remove all current members
   await prisma.organizationMember.deleteMany({ where: { organizationId: org.id } });
-  // Add new members (do NOT add creator unless in memberIds)
   if (memberIds.length > 0) {
     await prisma.organizationMember.createMany({
       data: memberIds.map((userId: string) => ({ userId, organizationId: org.id })),

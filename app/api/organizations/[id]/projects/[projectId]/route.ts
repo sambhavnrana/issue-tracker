@@ -35,7 +35,6 @@ export async function GET(req: NextRequest, { params }: { params: { id: string; 
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
 
-    // Check if user is a member of the organization
     const isMember = project.organization.organizationMemberships.some(
       (m: any) => m.userId === userId
     );
@@ -62,7 +61,6 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   try {
     const { name, description } = await req.json();
     
-    // Check if user is the creator of the organization
     const organization = await prisma.organization.findUnique({
       where: { id: params.id },
       select: { creatorId: true }
@@ -76,7 +74,6 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       return NextResponse.json({ error: 'Only the organization creator can edit projects' }, { status: 403 });
     }
 
-    // Check if project exists and belongs to the organization
     const project = await prisma.project.findUnique({
       where: { id: params.projectId },
       select: { organizationId: true }
@@ -90,7 +87,6 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       return NextResponse.json({ error: 'Project does not belong to this organization' }, { status: 403 });
     }
 
-    // Update the project
     const updatedProject = await prisma.project.update({
       where: { id: params.projectId },
       data: { 

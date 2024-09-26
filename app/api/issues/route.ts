@@ -57,7 +57,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    // Find all organization IDs where the user is a member
     const orgMemberships = await prisma.organizationMember.findMany({
       where: { userId: session.user.id },
       select: { organizationId: true },
@@ -67,7 +66,6 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const projectId = searchParams.get("projectId");
 
-    // Only allow issues for projects in organizations where the user is a member, or issues assigned to the user
     const where: any = {
       OR: [
         { assignedToUserId: session.user.id },
@@ -78,7 +76,6 @@ export async function GET(request: NextRequest) {
       where.projectId = projectId;
     }
 
-    // Then get all issues for the project/org membership
     const issues = await prisma.issue.findMany({
       where,
       orderBy: { createdAt: 'desc' },

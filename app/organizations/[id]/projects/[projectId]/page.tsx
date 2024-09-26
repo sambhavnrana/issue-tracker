@@ -91,7 +91,6 @@ export default function ProjectOverviewPage() {
   if (error) return <div className="p-8 text-center text-red-700 font-medium">{error}</div>;
   if (!project) return <div className="p-8 text-center text-gray-600">Project not found.</div>;
 
-  // Calculate issue statistics
   const totalIssues = project.Issue?.length || 0;
   const openIssues = project.Issue?.filter((issue: any) => issue.status === 'OPEN').length || 0;
   const inProgressIssues = project.Issue?.filter((issue: any) => issue.status === 'IN_PROGRESS').length || 0;
@@ -159,12 +158,11 @@ export default function ProjectOverviewPage() {
             ) : (
               <div>
                 <h1 className="text-3xl font-bold text-brand-dark">{project.name}</h1>
-                <p className="text-brand-light mt-2">
-                  Organization: {project.organization?.name}
-                </p>
-                {project.description && (
-                  <p className="text-gray-600 max-w-2xl mt-2">{project.description}</p>
-                )}
+                <p className="text-brand mt-2 text-lg font-semibold">Project Name: <span className="text-brand-dark mt-2 font-normal text-base">{project.organization?.name}</span></p>
+                <p>{project.description && (
+                  <p className="text-brand-light mt-2 text-base font-semibold ">Project Description: <span className="text-gray-600 mt-2 font-normal text-base">{project.description}</span></p>
+                )}</p>
+                
               </div>
             )}
           </div>

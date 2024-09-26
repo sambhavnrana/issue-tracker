@@ -17,6 +17,7 @@ export default function IssueDetailClient() {
   const [error, setError] = useState('');
   const [authorized, setAuthorized] = useState(true);
   const [isOwner, setIsOwner] = useState(false);
+  const [canEditDelete, setCanEditDelete] = useState(false);
 
   useEffect(() => {
     if (!params?.id) return;
@@ -37,6 +38,10 @@ export default function IssueDetailClient() {
         setIssue(data);
         fetch('/api/auth/session').then(r => r.json()).then(session => {
           setIsOwner(session?.user?.id && data.organization?.creatorId === session.user.id);
+          setCanEditDelete(
+            session?.user?.id &&
+            (data.createdById === session.user.id || data.organization?.creatorId === session.user.id)
+          );
         });
         setLoading(false);
       })
@@ -82,10 +87,10 @@ export default function IssueDetailClient() {
         {/* Main Content */}
         <div className="lg:col-span-2">
           <IssueDetails issue={issue} ownerName={issue.organization?.creator?.name} creatorImage={issue.creator?.image} />
-          {!isOwner && (
+          {!canEditDelete && (
             <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <div className="text-yellow-800 font-medium text-sm">
-                Only the organization owner can edit or delete this issue.
+              <div className="text-yellow-800 font-medium">
+                Only the organization owner or the issue creator can edit or delete this issue. Organization members can only change the status.
               </div>
             </div>
           )}
@@ -94,15 +99,14 @@ export default function IssueDetailClient() {
         {/* Sidebar */}
         <div className="lg:col-span-1">
           <div className="bg-white border border-brand-light rounded-lg p-6 shadow-sm">
-            <h3 className="text-lg font-semibold text-brand-dark mb-4">Issue Actions</h3>
+            <h3 className="text-xl font-bold text-brand-dark mb-4">Issue Actions</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                <label className="block text-lg font-medium text-gray-700 mb-2">Status</label>
                 <StatusSelect issue={issue} />
               </div>
-              
-              {isOwner && (
-                <div className="flex gap-3 pt-4 border-t border-gray-200">
+              {canEditDelete && (
+                <div className="flex gap-3 pt-4 border-t border-gray-300">
                   <EditIssueButton issueId={issue.id} />
                   <DeleteIssueButton issueId={issue.id} />
                 </div>

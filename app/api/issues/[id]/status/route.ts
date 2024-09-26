@@ -31,6 +31,11 @@ export async function PATCH(
       where: { id: parseInt(params.id) },
       include: {
         Project: true,
+        organization: {
+          include: {
+            organizationMemberships: true
+          }
+        }
       },
     });
 
@@ -38,11 +43,11 @@ export async function PATCH(
       return NextResponse.json({ error: "Issue not found" }, { status: 404 });
     }
 
-    const isAuthorized =
-      issue.createdById === session.user.id ||
-      issue.assignedToUserId === session.user.id;
+    const isOrgMember = issue.organization?.organizationMemberships.some((m: any) => m.userId === session.user.id);
+    const isAssignee = issue.assignedToUserId === session.user.id;
+    const isCreator = issue.organization?.creatorId === session.user.id;
 
-    if (!isAuthorized) {
+    if (!(isCreator || isAssignee || isOrgMember)) {
       return NextResponse.json(
         { error: "Not authorized to update this issue" },
         { status: 403 }

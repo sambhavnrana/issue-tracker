@@ -11,7 +11,7 @@ export default function LandingPage() {
       <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-brand-dark">
         Track<span className="text-brand">Buddy</span>
       </h1>
-      <div className="w-32 sm:w-40 md:w-48 lg:w-64 xl:w-80 h-1 sm:h-2 bg-gradient-to-r from-brand-light to-brand-dark mx-auto rounded-full animate-fade-in-line shadow-2xl [animation-delay:4s]"></div>
+      <div className="w-32 sm:w-40 md:w-48 lg:w-64 xl:w-80 h-1 sm:h-2 bg-gradient-to-r from-brand-light to-brand-dark mx-auto rounded-full  shadow-2xl [animation-delay:2s] animate-pulse"></div>
 
       <p className="text-base sm:text-lg md:text-xl text-slate-600 max-w-2xl sm:max-w-3xl mx-auto leading-relaxed font-light pt-4 sm:pt-6 animate-fade-in-up [animation-delay:0.4s]">
         Your all-in-one solution for <span className="font-semibold text-brand-light">efficient issue tracking</span> and
@@ -49,7 +49,7 @@ export default function LandingPage() {
             transition={{ type: "spring", stiffness: 900, damping: 12 }}
           >
             <Link href="/issues/list"
-              className="inline-block bg-gray-100 text-brand border border-brand px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-xl text-lg sm:text-xl font-semibold hover:bg-gray-200 hover:shadow-2xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand-dark"
+              className="inline-block bg-gray-100 text-brand border border-brand px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-xl text-lg sm:text-xl font-semibold hover:bg-gray-200 hover:shadow-2xl transition-all duration-200 focus:outline-none focus:ring-2"
             >
               View Issues
             </Link>
@@ -102,7 +102,7 @@ export default function LandingPage() {
                 <span className="inline-block px-2 py-1 rounded bg-brand-light text-white text-xs font-semibold">4 Issues</span>
                 <span className="inline-block px-2 py-1 rounded bg-green-100 text-green-700 text-xs font-semibold">2 Closed</span>
               </div>
-              <div className="text-xs text-gray-400">Created: 2024-07-01</div>
+              <div className="text-xs text-gray-400">Created: 2/12/2024</div>
             </div>
           </div>
         </div>
@@ -164,7 +164,7 @@ export default function LandingPage() {
               transition={{ type: "spring", stiffness: 600, damping: 7 }}
             >
               <Link href="/issues/list"
-                className="inline-block bg-brand text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-xl text-base sm:text-lg font-semibold transition-all duration-200 focus:outline-none focus:ring-2 hover:bg-brand-dark hover:scale-110 hover:shadow-2xl "
+                className="inline-block bg-brand text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-xl text-base sm:text-lg font-semibold transition-all duration-200 focus:outline-none focus:ring-2 animate-bounce hover:bg-brand-dark hover:scale-110 hover:shadow-2xl hover:animate-none"
               >
                 Get Started Now
               </Link>

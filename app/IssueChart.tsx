@@ -25,12 +25,10 @@ const IssueChart = ({ open, inProgress, closed }: Props) => {
         ]);
     }, [open, inProgress, closed]);
 
-    // Custom tick formatter to color the labels
     const CustomTick = ({ x, y, payload }: any) => {
         const label = payload.value;
         let color = 'text-gray-600';
         
-        // Assign colors based on label
         switch (label) {
             case 'Open':
                 color = 'text-red-700';
@@ -78,15 +76,14 @@ const IssueChart = ({ open, inProgress, closed }: Props) => {
                         tick={{ fill: '#6B7280', fontSize: 12 }}
                     />
                     <Bar
-                        key={`${open}-${inProgress}-${closed}`} // ensures React animates on data change
+                        key={`${open}-${inProgress}-${closed}`}
                         dataKey="value"
-                        // fill={(entry: any) => entry.fill}
                         barSize={70}
                         isAnimationActive={true}
-                        animationBegin={400}
-                        animationDuration={1200}
+                        animationBegin={500}
+                        animationDuration={1400}
                         animationEasing="ease-in-out"
-                        radius={[8, 8, 0, 0]} // rounded top corners for a smoother look
+                        radius={[12, 12, 0, 0]}
                     />                
                 </BarChart>
             </ResponsiveContainer>

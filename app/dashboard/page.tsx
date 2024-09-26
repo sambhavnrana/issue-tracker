@@ -16,7 +16,6 @@ export default async function Home() {
   }
   const userId = session.user.id;
 
-  // Find all organization IDs where the user is a member
   const orgMemberships = await prisma.organizationMember.findMany({
     where: { userId },
     select: { organizationId: true },

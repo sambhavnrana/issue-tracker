@@ -69,7 +69,7 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
             }
 
             router.push('/issues/list')
-            router.refresh(); // refresh the page to get the updated data
+            router.refresh();
         } catch (error) {
             console.error('Error submitting form:', error);
             setSubmitting(false)
@@ -141,7 +141,7 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
                 <ErrorMessage>{errors.description?.message}</ErrorMessage>
                 <Button disabled={Boolean(isSubmitting || (selectedOrg && projects.length === 0))} type="submit">
                     {issue ? 'Update Issue' : 'Submit New Issue'}{' '}
-                    {isSubmitting && <Spinner />}
+                    {isSubmitting && <Spinner size={18} />}
                 </Button>
             </form>
         </div>

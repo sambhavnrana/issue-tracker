@@ -19,7 +19,6 @@ const ProjectFilter = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Fetch projects from organizations where user is a member
         fetch('/api/projects/available')
             .then(res => res.json())
             .then(data => {

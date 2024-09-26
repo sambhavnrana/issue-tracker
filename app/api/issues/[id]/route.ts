@@ -42,10 +42,10 @@ export async function PATCH(
       return NextResponse.json({ error: "Invalid issue" }, { status: 404 });
     }
 
-    // Allow only the creator to edit title/description, and only assignee/org member to change status
     const isOrgMember = issue.organization?.organizationMemberships.some((m: any) => m.userId === userId);
     const isAssignee = issue.assignedToUserId === userId;
-    const isCreator = issue.organization?.creatorId === userId;
+    const isCreator = issue.createdById === userId;
+    const isOrgOwner = issue.organization?.creatorId === userId;
 
     const body = await request.json();
     const validation = patchIssueSchema.safeParse(body);
@@ -54,11 +54,9 @@ export async function PATCH(
       return NextResponse.json(validation.error.format(), { status: 400 });
     }
 
-    // Only allow the creator to edit title/description
-    if (("title" in validation.data || "description" in validation.data) && !isCreator) {
-      return NextResponse.json({ error: "Only the creator can edit title or description." }, { status: 403 });
+    if (("title" in validation.data || "description" in validation.data) && !(isCreator || isOrgOwner)) {
+      return NextResponse.json({ error: "Only the organization owner or issue creator can edit this issue." }, { status: 403 });
     }
-    // Only allow assignee or org member to change status
     if ("status" in validation.data && !(isAssignee || isOrgMember)) {
       return NextResponse.json({ error: "Only the assignee or org member can change status." }, { status: 403 });
     }
@@ -95,7 +93,7 @@ export async function DELETE(
     select: {
       id: true,
       createdById: true,
-      assignedToUserId: true
+      organization: { select: { creatorId: true } }
     }
   });
 
@@ -103,11 +101,9 @@ export async function DELETE(
     return NextResponse.json({ error: "Invalid issue" }, { status: 404 });
   }
 
-  // Only creator or assignee can edit/delete
-  const isAuthorized =
-    issue?.createdById === userId ||
-    issue?.assignedToUserId === userId;
-  if (!isAuthorized) {
+  const isCreator = issue.createdById === userId;
+  const isOrgOwner = issue.organization?.creatorId === userId;
+  if (!(isCreator || isOrgOwner)) {
     return NextResponse.json({ error: "Not authorized" }, { status: 403 });
   }
 
@@ -157,7 +153,6 @@ export async function GET(
   if (!issue) {
     return NextResponse.json({ error: "Issue not found" }, { status: 404 });
   }
-  // Authorization: assigned, or org member
   const isOrgMember = issue.organization?.organizationMemberships.some((m: any) => m.userId === userId);
   const isAuthorized = issue.assignedToUserId === userId || isOrgMember;
   if (!isAuthorized) {

@@ -31,7 +31,6 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
     }
 
-    // Check if user is a member
     const isMember = organization.organizationMemberships.some(
       (m: any) => m.userId === userId
     );
@@ -56,7 +55,6 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   try {
     const { name } = await req.json();
     
-    // Check if user is the creator
     const organization = await prisma.organization.findUnique({
       where: { id: params.id },
       select: { creatorId: true }
@@ -89,7 +87,6 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
   const userId = session.user.id;
 
   try {
-    // Check if user is the creator
     const organization = await prisma.organization.findUnique({
       where: { id: params.id },
       select: { 
@@ -112,7 +109,6 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
       return NextResponse.json({ error: 'Only the creator can delete the organization' }, { status: 403 });
     }
 
-    // Delete the organization (this will cascade delete related data)
     await prisma.organization.delete({
       where: { id: params.id }
     });

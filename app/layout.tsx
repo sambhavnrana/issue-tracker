@@ -7,7 +7,8 @@ import { Container, Theme } from '@radix-ui/themes';
 import AuthProvider from './auth/Provider';
 import QueryClientProvider from './QueryClientProvider';
 import Footer from './Footer';
-import AppShell from './components/AppShell'; // <-- import the new client component
+import AppShell from './components/AppShell';
+import { Toaster } from 'react-hot-toast';
 
 const poppins = localFont({
   src: '../public/fonts/poppins-regular-webfont.woff2',
@@ -32,6 +33,7 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
       </head>
       <body className={poppins.variable}>
+        <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
         <QueryClientProvider>
           <AuthProvider>
             <Theme appearance="light" accentColor="pink" radius="large">

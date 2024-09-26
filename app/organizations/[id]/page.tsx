@@ -36,7 +36,6 @@ export default async function OrganizationDetailPage({ params }: { params: { id:
 
   if (!organization) return notFound();
 
-  // Check if user is a member
   const isMember = organization.organizationMemberships.some(
     (m: any) => m.userId === user.id
   );
@@ -45,7 +44,6 @@ export default async function OrganizationDetailPage({ params }: { params: { id:
     return <div className="p-8 text-center text-red-700 font-medium">Not authorized to view this organization</div>;
   }
 
-  // Check if user is the creator
   const isCreator = organization.creatorId === user.id;
 
   return (
