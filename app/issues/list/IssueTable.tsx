@@ -30,7 +30,7 @@ const IssueTable = ({ searchParams, issues }: Props) => {
                                     query: {
                                         ...searchParams, orderBy: column.value
                                     }
-                                }} className="flex items-center gap-1 hover:text-brand-light/80 transition">
+                                }} className="flex items-center gap-1 hover:underline  transition">
                                     {column.label}
                                     {column.value === searchParams.orderBy && <ArrowUpIcon className="w-3 h-3" />}
                                 </Link>
@@ -64,7 +64,7 @@ const IssueTable = ({ searchParams, issues }: Props) => {
                                     <IssueStatusBadge status={issue.status} />
                                 </td>
                                 <td className="px-2 sm:px-3 md:px-4 py-2 hidden md:table-cell text-xs sm:text-sm text-gray-600">
-                                {issue.createdAt.toLocaleDateString('en-US', {year: 'numeric',month: 'short',day: 'numeric'})}
+                                    {issue.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                                 </td>
                                 <td className="px-2 sm:px-3 md:px-4 py-2 hidden md:table-cell text-xs sm:text-sm text-gray-600">
                                     {issue.organization?.name || '-'}
@@ -76,11 +76,11 @@ const IssueTable = ({ searchParams, issues }: Props) => {
                                     {issue.creator && (
                                         <Tooltip.Root>
                                             <Tooltip.Trigger asChild>
-                                                <Avatar 
-                                                    src={issue.creator.image} 
-                                                    fallback={issue.creator.name?.[0] || '?'} 
-                                                    radius="full" 
-                                                    size="3" 
+                                                <Avatar
+                                                    src={issue.creator.image}
+                                                    fallback={issue.creator.name?.[0] || '?'}
+                                                    radius="full"
+                                                    size="3"
                                                 />
                                             </Tooltip.Trigger>
                                             <Tooltip.Portal>
