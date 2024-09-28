@@ -57,7 +57,7 @@ export default function LandingPage() {
         </motion.div>
       </div>
 
-      <div className="w-full max-w-4xl mx-auto mt-8 sm:mt-12 mb-8 sm:mb-12 animate-fade-in-up [animation-delay:0.8s]">
+      <div className="w-full max-w-4xl mx-auto mt-6 mb-2 animate-fade-in-up [animation-delay:0.8s]">
         <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-brand-dark mb-4 sm:mb-6 text-center">See TrackBuddy in Action</h2>
         <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 items-start justify-center">
           {/* Demo Issues Table */}
@@ -106,25 +106,6 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
-        <div className="text-center mt-4 sm:mt-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2, duration: 0.6 }}
-          >
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 600, damping: 8 }}
-            >
-              <Link href="/api/auth/signin"
-                className="inline-block bg-gradient-to-r from-brand to-brand-dark text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-xl text-base sm:text-lg font-semibold hover:bg-brand-dark transition-all duration-200  hover:shadow-2xl hover:scale-110"
-              >
-                Go to your workspace
-              </Link>
-            </motion.div>
-          </motion.div>
-        </div>
       </div>
 
       <div className="mt-6 sm:mt-8 text-center animate-fade-in-left [animation-delay:1.5s]">
@@ -139,8 +120,8 @@ export default function LandingPage() {
             "Customizable workflows",
             "Mobile-responsive design",
           ].map((benefit, index) => (
-            <motion.div 
-              key={index} 
+            <motion.div
+              key={index}
               className="flex items-center gap-2 sm:gap-3 text-left"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
