@@ -4,19 +4,39 @@ import { issueSchema } from "../../validationSchemas";
 import { auth } from "@/auth";
 
 export async function POST(request: NextRequest) {
-  const session = await auth();
+  try {
+    const session = await auth();
+    console.log('Session:', session);
 
-  if (!session) return NextResponse.json({}, { status: 401 });
+    if (!session) {
+      console.log('No session found');
+      return NextResponse.json({ message: "Authentication required" }, { status: 401 });
+    }
 
-  const body = await request.json();
-  const validation = issueSchema.safeParse(body);
-  if (!validation.success)
-    return NextResponse.json(validation.error.format(), { status: 400 });
-  //validation.error.format() returns an object with the error message in a much more readable format
+    const body = await request.json();
+    console.log('Received body:', body);
 
-  const newIssue = await prisma.issue.create({
-    data: { title: body.title, description: body.description },
-  });
+    const validation = issueSchema.safeParse(body);
+    if (!validation.success) {
+      console.log('Validation failed:', validation.error);
+      return NextResponse.json(validation.error.format(), { status: 400 });
+    }
 
-  return NextResponse.json(newIssue, { status: 201 });
+    const newIssue = await prisma.issue.create({
+      data: { 
+        title: body.title, 
+        description: body.description,
+        status: 'OPEN' // Set default status
+      },
+    });
+
+    console.log('Created issue:', newIssue);
+    return NextResponse.json(newIssue, { status: 201 });
+  } catch (error) {
+    console.error('Error creating issue:', error);
+    return NextResponse.json(
+      { message: "Error creating issue", error: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
+    );
+  }
 }

@@ -28,18 +28,30 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
     const onSubmit = handleSubmit(async (data) => {
         try {
             setSubmitting(true)
-            if (issue)
+            setError('')
+            console.log('Submitting data:', data);
+            
+            if (issue) {
+                console.log('Updating issue:', issue.id);
                 await axios.patch('/api/issues/' + issue.id, data);
-            else
-                await axios.post('/api/issues', data);
+            } else {
+                console.log('Creating new issue');
+                const response = await axios.post('/api/issues', data);
+                console.log('Response:', response.data);
+            }
+            
             router.push('/issues/list')
             router.refresh(); // refresh the page to get the updated data
         } catch (error) {
+            console.error('Error submitting form:', error);
             setSubmitting(false)
-            setError('An unexpected error occurred while creating the issue');
+            if (axios.isAxiosError(error)) {
+                setError(error.response?.data?.message || 'An unexpected error occurred while creating the issue');
+            } else {
+                setError('An unexpected error occurred while creating the issue');
+            }
         }
-    }
-    )
+    })
 
     return (
         <div className='max-w-xl'>
@@ -47,9 +59,8 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
                 <Callout.Text>
                     {error}
                 </Callout.Text>
-
             </Callout.Root>}
-            <form className=' space-y-3'
+            <form className='space-y-3'
                 onSubmit={onSubmit} >
                 <TextField.Root >
                     <TextField.Input defaultValue={issue?.title} placeholder="Title" {...register('title')} />
