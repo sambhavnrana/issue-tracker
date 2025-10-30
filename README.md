@@ -7,7 +7,7 @@ A modern, full-stack project management and issue tracking application built wit
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/sambhavnrana/trackbuddy.git
+git clone https://github.com/sambhavnrana/issue-tracker
 cd trackbuddy
 ```
 
